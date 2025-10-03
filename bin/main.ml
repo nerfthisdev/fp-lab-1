@@ -1,24 +1,11 @@
-let rec gcd a b = if b = 0 then a else gcd b (a mod b)
+open Fp_lab_1
 
-let rec lcm_list_rec = function
-  | [] -> 1
-  | [ x ] -> x
-  | x :: y :: rest -> lcm_list_rec ((x * y / gcd x y) :: rest)
-
-(* Способ 2: Хвостовая рекурсия для НОК списка чисел *)
-let lcm_list_tail numbers =
-  let rec helper acc = function
-    | [] -> acc
-    | x :: rest -> helper (acc * x / gcd acc x) rest
-  in
-  match numbers with [] -> 1 | x :: rest -> helper x rest
-
-(* Создаём список чисел от 1 до 20 *)
-let numbers = List.init 20 (fun x -> x + 1)
-
-(* Запускаем оба способа *)
 let () =
-  let result1 = lcm_list_rec numbers in
-  let result2 = lcm_list_tail numbers in
-  Printf.printf "Обычная рекурсия: %d\n" result1;
-  Printf.printf "Хвостовая рекурсия: %d\n" result2
+  let n = 20 in
+  let a1 = Task1.answer_rec n in
+  let a2 = Task1.answer_tail n in
+  Printf.printf "Task 1 (Euler #5). n=%d\n" n;
+  Printf.printf "  rec : %d\n" a1;
+  Printf.printf "  tail: %d\n" a2;
+  if a1 = a2 then Printf.printf "  OK: answers match.\n"
+  else Printf.printf "  MISMATCH!\n"
