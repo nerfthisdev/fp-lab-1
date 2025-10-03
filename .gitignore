@@ -1,0 +1,22 @@
+
+# dune build artifacts
+_build/
+*.install
+
+# ocaml bytecode / native binaries
+*.cmo
+*.cmi
+*.cmx
+*.cma
+*.cmxa
+*.cmxs
+*.a
+*.o
+
+# merlin / editor tooling
+*.merlin
+*.swp
+*.swo
+
+# opam local switch
+.opam/
