@@ -21,8 +21,8 @@ let () =
 
 let () =
   let n_max = 1000 in
-  let a_rec = Task2.cycle_len_rec n_max in
-  let a_tail7 = Task2.cycle_len_tail n_max in
+  let a_rec = Task2.cycle_len_rec 7 in
+  let a_tail7 = Task2.cycle_len_tail 7 in
   let d_fold = Task2.answer_fold n_max in
   let d_map = Task2.answer_map n_max in
   let d_for = Task2.answer_for n_max in
