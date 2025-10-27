@@ -1,4 +1,4 @@
-(* Project Euler #26: Reciprocal Cycles  *)
+(* Project Euler #26: Reciprocal Cycles *)
 
 let strip_2_5 n =
   (* remove factors 2 and 5 *)
@@ -8,9 +8,10 @@ let strip_2_5 n =
 (* build remainders until the first repeat (prevents infinite recursion) *)
 let build_remainders n rem =
   let rec go rem seen acc =
-    if List.mem rem seen then List.rev (rem :: acc) (* last = first repeat *)
+    if rem = 0 then List.rev acc
+    else if List.mem rem seen then List.rev (rem :: acc)  (* stop on repeat *)
     else
-      let rem' = rem * 10 mod n in
+      let rem' = (rem * 10) mod n in
       go rem' (rem :: seen) (rem :: acc)
   in
   go rem [] []
@@ -25,13 +26,14 @@ let cycle_len_rec d =
   if n = 1 then 0
   else
     let rems = build_remainders n 1 in
-    let last = List.hd (List.rev rems) in
-    (* the repeated one *)
-    match find_pos last 0 (List.rev (List.tl (List.rev rems))) with
-    | None -> 0
-    | Some j ->
-        (* cycle length = (#rems - 1) - first_index(last) *)
-        List.length rems - 1 - j
+    match List.rev rems with
+    | [] | [_] -> 0
+    | last :: rev_tail ->
+        (match find_pos last 0 (List.rev rev_tail) with
+         | None -> 0
+         | Some j ->
+             (* cycle length = (#rems - 1) - first_index(last) *)
+             List.length rems - 1 - j)
 
 (* 2. tail recursion with visited map (unchanged) *)
 let cycle_len_tail d =
@@ -43,7 +45,7 @@ let cycle_len_tail d =
       else
         match List.assoc_opt rem seen with
         | Some pos -> step - pos
-        | None -> loop (rem * 10 mod n) (step + 1) ((rem, step) :: seen)
+        | None -> loop ((rem * 10) mod n) (step + 1) ((rem, step) :: seen)
     in
     loop 1 0 []
 
@@ -51,13 +53,13 @@ let cycle_len_tail d =
 let argmax_by f a b = if f a >= f b then a else b
 
 let answer_fold n_max =
-  List.init (n_max - 2 + 1) (fun i -> i + 2) (* 2..n_max *)
+  List.init (n_max - 1) (fun i -> i + 2)  (* 2..n_max *)
   |> List.filter (fun d -> strip_2_5 d <> 1)
   |> List.fold_left (fun best d -> argmax_by cycle_len_tail best d) 2
 
 (* 4. map-based (map d -> (d,len) then fold) *)
 let answer_map n_max =
-  List.init (n_max - 2 + 1) (fun i -> i + 2)
+  List.init (n_max - 1) (fun i -> i + 2)
   |> List.map (fun d -> (d, cycle_len_tail d))
   |> List.fold_left
        (fun (bd, bl) (d, l) -> if l > bl then (d, l) else (bd, bl))
@@ -69,9 +71,7 @@ let answer_for n_max =
   let best_d = ref 2 and best_l = ref (cycle_len_tail 2) in
   for d = 3 to n_max do
     let l = cycle_len_tail d in
-    if l > !best_l then (
-      best_l := l;
-      best_d := d)
+    if l > !best_l then (best_l := l; best_d := d)
   done;
   !best_d
 
@@ -80,9 +80,7 @@ let answer_while n_max =
   let best_d = ref 2 and best_l = ref (cycle_len_tail 2) in
   while !d <= n_max do
     let l = cycle_len_tail !d in
-    if l > !best_l then (
-      best_l := l;
-      best_d := !d);
+    if l > !best_l then (best_l := l; best_d := !d);
     incr d
   done;
   !best_d
@@ -99,3 +97,4 @@ let answer_seq n_max =
          let l_d = cycle_len_tail d in
          if l_d > l_best then d else best)
        2
+
