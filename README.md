@@ -1,5 +1,8 @@
 # fp-lab-1
 
+Тынкевич Валерий Николаевич
+353054
+
 [![Build & lint](https://github.com/nerfthisdev/fp-lab-1/actions/workflows/ci.yml/badge.svg)](https://github.com/nerfthisdev/fp-lab-1/actions/workflows/ci.yml)
 
 ## [Problem 5](https://projecteuler.net/problem=5)
